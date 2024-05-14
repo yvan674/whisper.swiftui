@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08DDEB572BBA9FC500E19312 /* RealTimeAudioProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DDEB562BBA9FC500E19312 /* RealTimeAudioProcessor.swift */; };
+		08DDEB572BBA9FC500E19312 /* RealTimeWhisper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DDEB562BBA9FC500E19312 /* RealTimeWhisper.swift */; };
 		0A8E49002954B3F100704C1B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0A8E48FF2954B3F100704C1B /* README.md */; };
 		0AA751482953AC2E001EE061 /* samples in Resources */ = {isa = PBXBuildFile; fileRef = 0AA751462953AC2E001EE061 /* samples */; };
 		0AA751492953AC2E001EE061 /* models in Resources */ = {isa = PBXBuildFile; fileRef = 0AA751472953AC2E001EE061 /* models */; };
@@ -22,7 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		08DDEB562BBA9FC500E19312 /* RealTimeAudioProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeAudioProcessor.swift; sourceTree = "<group>"; };
+		08DDEB562BBA9FC500E19312 /* RealTimeWhisper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeWhisper.swift; sourceTree = "<group>"; };
 		0A8E48FF2954B3F100704C1B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0AA751462953AC2E001EE061 /* samples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = samples; sourceTree = "<group>"; };
 		0AA751472953AC2E001EE061 /* models */ = {isa = PBXFileReference; lastKnownFileType = folder; path = models; sourceTree = "<group>"; };
@@ -35,7 +35,7 @@
 		0AAC5DA029539CD0003032C3 /* WhisperCppDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhisperCppDemo.entitlements; sourceTree = "<group>"; };
 		0AAC5DCD2953A05C003032C3 /* WhisperState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperState.swift; sourceTree = "<group>"; };
 		0AAC5DD02953A394003032C3 /* LibWhisper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibWhisper.swift; sourceTree = "<group>"; };
-		E3F92DC22AFA8DD800A6A9D4 /* whisper.cpp */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = whisper.cpp; path = whisper.cpp; sourceTree = "<group>"; };
+		E3F92DC22AFA8DD800A6A9D4 /* whisper.cpp */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = whisper.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +54,7 @@
 			isa = PBXGroup;
 			children = (
 				0AAC5DCD2953A05C003032C3 /* WhisperState.swift */,
-				08DDEB562BBA9FC500E19312 /* RealTimeAudioProcessor.swift */,
+				08DDEB562BBA9FC500E19312 /* RealTimeWhisper.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -222,7 +222,7 @@
 				0AAC5D9B29539CCF003032C3 /* WhisperCppDemoApp.swift in Sources */,
 				0AAC5DCE2953A05C003032C3 /* WhisperState.swift in Sources */,
 				0AAC5DD12953A394003032C3 /* LibWhisper.swift in Sources */,
-				08DDEB572BBA9FC500E19312 /* RealTimeAudioProcessor.swift in Sources */,
+				08DDEB572BBA9FC500E19312 /* RealTimeWhisper.swift in Sources */,
 				0AA7514C2953B569001EE061 /* RiffWaveUtils.swift in Sources */,
 				0AA7514E2953D958001EE061 /* Recorder.swift in Sources */,
 			);
@@ -371,7 +371,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
@@ -379,11 +379,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.whispercppdemo.WhisperCppDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -411,7 +412,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				LLVM_LTO = YES;
@@ -424,10 +425,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.whispercppdemo.WhisperCppDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
