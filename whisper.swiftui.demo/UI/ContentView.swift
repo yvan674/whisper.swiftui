@@ -3,7 +3,8 @@ import AVFoundation
 
 struct ContentView: View {
 //    @StateObject var whisperState = WhisperActor()
-    @State var audioProcessor = RealTimeWhisper()
+//    @State var audioProcessor = RealTimeWhisper()
+    @Environment(RealTimeWhisper.self) var audioProcessor
     
     var body: some View {
         NavigationStack {
