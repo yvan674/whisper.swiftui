@@ -2,35 +2,18 @@ import SwiftUI
 import AVFoundation
 
 struct ContentView: View {
-    @StateObject var whisperState = WhisperState()
-    let audioProcessor = RealTimeWhisper()
+//    @StateObject var whisperState = WhisperActor()
+    @State var audioProcessor = RealTimeWhisper()
     
     var body: some View {
         NavigationStack {
             VStack {
                 HStack {
-//                    Button("Transcribe", action: {
-//                        Task {
-//                            await whisperState.transcribeMySample()
-//                        }
-//                    })
-//                    .buttonStyle(.bordered)
-//                    .disabled(!whisperState.canTranscribe)
-//
-//                    Button(whisperState.isRecording ? "Stop recording" : "Start recording", action: {
-//                        Task {
-//                            await whisperState.toggleRecord()
-//                        }
-//                    })
-//                    .buttonStyle(.bordered)
-//                    .disabled(!whisperState.canTranscribe)
-                    
                     Button("start realtime", action: {
                         Task {
                             // Example usage:
                             audioProcessor.canStop = true
                             do {
-                                audioProcessor.setWhisperStateDelegate(state: whisperState)
                                 try audioProcessor.startRealTimeProcessingAndPlayback()
                             } catch {
                                 print("Error starting real-time processing and playback: \(error.localizedDescription)")
@@ -49,7 +32,7 @@ struct ContentView: View {
                 }
                 
                 ScrollView {
-                    Text(verbatim: whisperState.translateText)
+                    Text(verbatim: audioProcessor.transcribedText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }

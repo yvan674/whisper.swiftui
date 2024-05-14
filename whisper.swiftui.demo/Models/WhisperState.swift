@@ -24,24 +24,10 @@ class WhisperState: NSObject, ObservableObject, AVAudioRecorderDelegate {
     
     override init() {
         super.init()
-        do {
-            try loadModel()
-            canTranscribe = true
-        } catch {
-            print(error.localizedDescription)
-            messageLog += "\(error.localizedDescription)\n"
-        }
+        
     }
     
-    private func loadModel() throws {
-        messageLog += "Loading model...\n"
-        if let modelUrl {
-            whisperContext = try WhisperContext(path: modelUrl)
-            messageLog += "Loaded model \(modelUrl.lastPathComponent)\n"
-        } else {
-            messageLog += "Could not locate model\n"
-        }
-    }
+    
     
     func transcribeData(_ data: [Float]) async {
         if (!canTranscribe) {

@@ -1,28 +1,55 @@
 import AVFoundation
 
+
+//@MainActor
+@Observable
 class RealTimeWhisper {
+    var messageLog = ""
+    var transcribedText = ""
+    var canTranscribe = false
+    var canStop = false
+    
     private let audioEngine = AVAudioEngine()
     private let audioSession = AVAudioSession.sharedInstance()
     private var audioBuffer: AVAudioPCMBuffer?
     private var lastBuffer: AVAudioPCMBuffer?
     private var audioPlayer: AVAudioPlayer?
-    private var formatConverter: AVAudioConverter!
-    private var whisperStateDelegate:WhisperState!
+    
+    private let outputFormat: AVAudioFormat
+    private var formatConverter: AVAudioConverter?
+    
     private var dataFloats = [Float]()
-    var canStop = false
     
-    /// Output format required by Whisper. This is mono 16khz Float32 PCM formatted audio.
-    private let outputFormat = AVAudioFormat(
-        commonFormat: .pcmFormatFloat32,
-        sampleRate: 16000,
-        channels: 1,
-        interleaved: true
-    )!  // We know this format works, so we can assert here.
     
-    func setWhisperStateDelegate (state: WhisperState) {
-        whisperStateDelegate = state
-    }
+    private var whisperContext: WhisperContext?
+    
+    init() {
+        var modelUrl: URL? {
+            Bundle.main.url(forResource: "ggml-small", withExtension: "bin", subdirectory: "models")
+        }
+        do {
+            if let path = modelUrl {
+                self.whisperContext = try WhisperContext(path: path)
+                print("Loaded model \(path.lastPathComponent)\n")
+            } else {
+                print("Could not locate model")
+            }
+            
+            self.canTranscribe = true
+        } catch {
+            print(error.localizedDescription)
+        }
         
+        // Initialize output format
+        /// Output format required by Whisper. This is mono 16khz Float32 PCM formatted audio.
+        self.outputFormat = AVAudioFormat(
+            commonFormat: .pcmFormatFloat32,
+            sampleRate: 16000,
+            channels: 1,
+            interleaved: true
+        )!  // We know this format works, so we can assert here.
+    }
+    
     func startRealTimeProcessingAndPlayback() throws {
         try audioSession.setCategory(.playAndRecord, mode: .default)
         
@@ -51,30 +78,32 @@ class RealTimeWhisper {
                                     frameCapacity: outputBufferCapacity
                                 )!
                                 var error: NSError? = nil
-                                if self.formatConverter != nil {
-                                    let status = self.formatConverter.convert(
-                                        to: outputBuffer,
-                                        error: &error,
-                                        withInputFrom: { inNumPackets, outStatus in
-                                            outStatus.pointee = AVAudioConverterInputStatus.haveData
-                                            return buffer
-                                        }
-                                    )
-                                    switch status {
-                                        case .error:
-                                            if let conversionError = error {
-                                              print("Error converting audio file: \(conversionError)")
-                                            }
-                                            return
-                                        default: break
-                                    }
-                                    self.formatConverter?.reset()
+                                guard let formatConverter = self.formatConverter else {
+                                    return
                                 }
+                                let status = self.formatConverter!.convert(
+                                    to: outputBuffer,
+                                    error: &error,
+                                    withInputFrom: { inNumPackets, outStatus in
+                                        outStatus.pointee = AVAudioConverterInputStatus.haveData
+                                        return buffer
+                                    }
+                                )
+                                switch status {
+                                    case .error:
+                                        if let conversionError = error {
+                                          print("Error converting audio file: \(conversionError)")
+                                        }
+                                        return
+                                    default: break
+                                }
+                                self.formatConverter?.reset()
+                                
                                 let oneFloat = try self.decodePCMBuffer(outputBuffer)
                                 self.dataFloats += oneFloat
                                 let tempDateFloats = self.dataFloats
                                 Task {
-                                    await self.whisperStateDelegate.transcribeData(tempDateFloats)
+                                    await self.transcribeData(tempDateFloats)
                                 }
                             } catch {
                                 print("Write error: \(error.localizedDescription)")
@@ -123,5 +152,21 @@ class RealTimeWhisper {
     func stopRecord() {
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
+    }
+    
+    private func transcribeData(_ data: [Float]) async {
+        if (!canTranscribe) {
+            return
+        }
+        
+        canTranscribe = false
+        guard let w = whisperContext else {
+            return
+        }
+        await w.fullTranscribe(samples: data)
+        let text = await w.getTranscription()
+        messageLog += "Done: \(text)\n"
+        transcribedText = "\(text) "
+        canTranscribe = true
     }
 }
