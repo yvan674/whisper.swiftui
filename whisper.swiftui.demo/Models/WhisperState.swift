@@ -36,7 +36,7 @@ class WhisperState: NSObject, ObservableObject, AVAudioRecorderDelegate {
     private func loadModel() throws {
         messageLog += "Loading model...\n"
         if let modelUrl {
-            whisperContext = try WhisperContext.createContext(path: modelUrl.path())
+            whisperContext = try WhisperContext(path: modelUrl)
             messageLog += "Loaded model \(modelUrl.lastPathComponent)\n"
         } else {
             messageLog += "Could not locate model\n"
