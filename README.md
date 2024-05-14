@@ -1,6 +1,10 @@
 A sample SwiftUI app using [whisper.cpp](https://github.com/ggerganov/whisper.cpp/) to do real-time voice-to-text transcriptions.
 See also: [whisper.objc](https://github.com/ggerganov/whisper.cpp/tree/master/examples/whisper.objc).
 
+**Fork changes**
+
+Modified to simplify the implementation from mpr0xy/whisper.swiftui.
+
 
 **Explain**
 
